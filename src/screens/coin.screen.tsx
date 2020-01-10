@@ -1,10 +1,9 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { Button } from '@ant-design/react-native';
+import { withNavigation, NavigationInjectedProps } from 'react-navigation';
 
-import { withNavigation } from 'react-navigation';
-
-const CoinScreen: React.FC<any> = ({ navigation }) => {
+const CoinScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
   return (
     <View>
       <Text>Coin view</Text>

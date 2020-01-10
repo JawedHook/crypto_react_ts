@@ -18,9 +18,7 @@ const LoadingScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, [navigation]);
 
   return (
