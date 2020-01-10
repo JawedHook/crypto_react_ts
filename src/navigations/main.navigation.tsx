@@ -3,55 +3,51 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import SavedCoinScreen from '../screens/saved-coin.screen';
 import CoinScreen from '../screens/coin.screen';
-import HomeScreen from '../screens/Home.screen';
+import HomeScreen from '../screens/home.screen';
 
 const MainNavigation: NavigationMaterialBottomTabScreenComponent = createMaterialBottomTabNavigator(
   {
-    Coins: createStackNavigator(
+    coins: createStackNavigator(
       {
-        Coins: {
+        coins: {
           screen: HomeScreen,
           navigationOptions: {
             headerTitle: 'Accueil',
-            tabBarColor: 'blue',
           },
         },
-        Coin: {
+        coin: {
           screen: CoinScreen,
           navigationOptions: {
             headerTitle: 'Saved',
-            tabBarColor: 'red',
           },
         },
       },
       {
-        initialRouteName: 'Coins',
+        initialRouteName: 'coins',
       },
     ),
-    Saved: createStackNavigator(
+    saved: createStackNavigator(
       {
-        SavedCoin: {
+        savedCoin: {
           screen: SavedCoinScreen,
           navigationOptions: {
             headerTitle: 'Accueil',
-            tabBarColor: 'blue',
           },
         },
-        Coin: {
+        coin: {
           screen: CoinScreen,
           navigationOptions: {
-            headerTitle: 'Saved',
-            tabBarColor: 'red',
+            headerTitle: 'saved',
           },
         },
       },
       {
-        initialRouteName: 'SavedCoin',
+        initialRouteName: 'savedCoin',
       },
     ),
   },
   {
-    initialRouteName: 'Coins',
+    initialRouteName: 'coins',
   },
 );
 
