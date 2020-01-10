@@ -4,7 +4,7 @@ import { Transition } from 'react-native-reanimated';
 
 // Screen
 import LoadingScreen from '../screens/loading.screen';
-import LoginScreen from '../screens/Login.screen';
+import LoginScreen from '../screens/login.screen';
 
 // Navigation
 import MainNavigation from './main.navigation';
