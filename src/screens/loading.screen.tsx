@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
-import { ActivityIndicator } from '@ant-design/react-native';
+import { ActivityIndicator } from 'react-native-paper';
 
 import { auth, createUserProfileDocument } from '../services/firebase.service';
 
@@ -23,7 +23,7 @@ const LoadingScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" color="purple" />
+      <ActivityIndicator size="large" />
     </View>
   );
 };
