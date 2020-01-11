@@ -1,45 +1,34 @@
-import React, { useState } from 'react';
-import { Text, View, SafeAreaView } from 'react-native';
-import { Button, InputItem } from '@ant-design/react-native';
-import { NavigationInjectedProps } from 'react-navigation';
+import React from 'react';
+import { Dimensions } from 'react-native';
+import { TabView, SceneMap } from 'react-native-tab-view';
 
-import { register, createUserProfileDocument } from '../services/firebase.service';
+import Layout from '../components/layout.component';
+import SignIn from '../components/sign-in.component';
+import SignUp from '../components/sign-up.component';
 
-const LoginScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
-  const [displayName, setDisplayName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+interface ILoginRoutes {
+  key: string;
+  title: string;
+}
 
-  const handleSubmit = async () => {
-    try {
-      const { user } = await register(email, password);
+const LoginScreen: React.FC = () => {
+  const [index, setIndex] = React.useState<number>(0);
+  const [routes] = React.useState<ILoginRoutes[]>([
+    { key: 'signin', title: 'Sign in' },
+    { key: 'signup', title: 'Sign up' },
+  ]);
 
-      const userRef = await createUserProfileDocument(user, { displayName });
+  const initialLayout: { width: number } = { width: Dimensions.get('window').width };
 
-      const userDocumentSnapshot = await userRef?.get();
-
-      console.log('currentUser:', { id: userDocumentSnapshot?.id, ...userDocumentSnapshot?.data() });
-      navigation.navigate('main');
-    } catch (err) {
-      setFirebaseError(err.message || err.toString());
-    }
-  };
+  const renderScene: any = SceneMap({
+    signin: SignIn,
+    signup: SignUp,
+  });
 
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Login view</Text>
-        <Text>Name: {displayName}</Text>
-        <Text>Email: {email}</Text>
-        <Text>Password: {password}</Text>
-        <InputItem value={displayName} onChange={setDisplayName} placeholder="Display Name" />
-        <InputItem value={email} onChange={setEmail} placeholder="Email" />
-        <InputItem value={password} onChange={setPassword} type="password" placeholder="Password" />
-        <Button onPress={handleSubmit}>Register</Button>
-        {firebaseError && <Text>{firebaseError}</Text>}
-      </View>
-    </SafeAreaView>
+    <Layout>
+      <TabView navigationState={{ index, routes }} renderScene={renderScene} onIndexChange={setIndex} initialLayout={initialLayout} />
+    </Layout>
   );
 };
 
