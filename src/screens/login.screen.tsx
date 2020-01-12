@@ -5,24 +5,20 @@ import { Subheading, DefaultTheme } from 'react-native-paper';
 import SignIn from '../components/sign-in.component';
 import SignUp from '../components/sign-up.component';
 import { useSafeArea } from 'react-native-safe-area-context';
+import { IRoutes } from '../interfaces/routes.interface';
 
-interface ILoginRoutes {
-  key: string;
-  title: string;
-}
-
-type State = NavigationState<ILoginRoutes>;
+type State = NavigationState<IRoutes>;
 
 const LoginScreen: React.FC = () => {
   const [index, setIndex] = React.useState<number>(0);
-  const [routes] = React.useState<ILoginRoutes[]>([
+  const [routes] = React.useState<IRoutes[]>([
     { key: 'signin', title: 'Sign in' },
     { key: 'signup', title: 'Sign up' },
   ]);
 
   const insets = useSafeArea();
 
-  const renderLabel = ({ route }: { route: ILoginRoutes; color: string }) => (
+  const renderLabel = ({ route }: { route: IRoutes; color: string }) => (
     <Subheading style={{ color: DefaultTheme.colors.accent }}>{route.title}</Subheading>
   );
 
