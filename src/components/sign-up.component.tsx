@@ -1,34 +1,23 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { View, Text, StyleSheet } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 
-import { register, createUserProfileDocument } from '../services/firebase.service';
+import { handleSignUp } from '../redux/user/user.actions';
+import { selectSignUpError, selectSignUpLoading } from '../redux/user/user.selectors';
 
-const SignUp: React.FC<NavigationInjectedProps> = ({ navigation }) => {
+interface IProps {
+  signUpError: string | null;
+  signUpLoading: boolean;
+  handleSignUp: (displayName: string, email: string, password: string) => void;
+}
+
+const SignUp: React.FC<IProps> = ({ signUpError, signUpLoading, handleSignUp }) => {
   const [displayName, setDisplayName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [submitLoading, setSubmitLoading] = useState<boolean>(false);
-  const [firebaseError, setFirebaseError] = useState<string | null>(null);
-
-  const handleSubmit = async () => {
-    try {
-      setSubmitLoading(true);
-      const { user } = await register(email, password);
-
-      const userRef = await createUserProfileDocument(user, { displayName });
-
-      const userDocumentSnapshot = await userRef?.get();
-
-      console.log('currentUser:', { id: userDocumentSnapshot?.id, ...userDocumentSnapshot?.data() });
-      setSubmitLoading(false);
-      navigation.navigate('main');
-    } catch (err) {
-      setSubmitLoading(false);
-      setFirebaseError(err.message || err.toString());
-    }
-  };
 
   const hasEmailError = (): boolean => !email.includes('@') && email.length !== 0;
   const hasPasswordError = (): boolean => password.length < 6 && password.length !== 0;
@@ -49,16 +38,16 @@ const SignUp: React.FC<NavigationInjectedProps> = ({ navigation }) => {
           secureTextEntry
           placeholder="Your Password"
         />
-        {hasPasswordError() && (
-          <HelperText type="error" visible={hasPasswordError()}>
-            Password to short !
-          </HelperText>
-        )}
+        {hasPasswordError() && <HelperText type="error">Password to short !</HelperText>}
       </View>
-      <Button loading={submitLoading} mode="contained" onPress={handleSubmit}>
+      <Button loading={signUpLoading} disabled={signUpLoading} mode="contained" onPress={() => handleSignUp(displayName, email, password)}>
         Signup
       </Button>
-      {firebaseError && <Text>{firebaseError}</Text>}
+      {signUpError && (
+        <HelperText style={styles.error} type="error">
+          {signUpError}
+        </HelperText>
+      )}
     </View>
   );
 };
@@ -67,6 +56,19 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 20,
   },
+  error: {
+    marginTop: 10,
+    textAlign: 'center',
+  },
 });
 
-export default withNavigation(SignUp);
+const mapStateToProps = createStructuredSelector({
+  signUpError: selectSignUpError,
+  signUpLoading: selectSignUpLoading,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  handleSignUp: (displayName: string, email: string, password: string) => dispatch(handleSignUp(displayName, email, password)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

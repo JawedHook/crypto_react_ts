@@ -1,14 +1,25 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { Text, ScrollView, View, TouchableOpacity } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
 
-import { logout } from '../services/firebase.service';
 import coinApiService from '../services/coin-api.service';
-import { Coins } from '../models/coin.model';
 import Layout from '../components/layout.component';
 import { Button, Card, Title, Paragraph, Caption } from 'react-native-paper';
+import { Coin } from '../models/coin.model';
+import { User } from '../models/user.model';
+import { selectCurrentUser, selectSignOutLoading, selectSignOutError } from '../redux/user/user.selectors';
+import { handleSignOut } from '../redux/user/user.actions';
 
-const HomeScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
+interface IProps extends NavigationInjectedProps {
+  currentUser: User;
+  signOutLoading: boolean;
+  signOutError: string | null;
+  handleSignOut: () => void;
+}
+
+const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading, signOutError, handleSignOut }) => {
   const onFetchDatas: any = async (page: number = 1, startFetch: (coins: any, pageLimit: number) => void, abortFetch: () => void) => {
     try {
       const coinsResponse: any = await coinApiService.getCoins();
@@ -38,10 +49,13 @@ const HomeScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
   //     </TouchableOpacity>
   //   );
   // };
-
   return (
     <Layout>
-      <Button onPress={logout}>Logout</Button>
+      {currentUser && <Title>Hi {currentUser.displayName} !</Title>}
+      <Button loading={signOutLoading} disabled={signOutLoading} mode="contained" onPress={handleSignOut}>
+        Logout
+      </Button>
+      {signOutError && <Text style={{ color: 'red' }}>{signOutError}</Text>}
       <Card>
         <Card.Title
           title="Card Title"
@@ -63,4 +77,14 @@ const HomeScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  signOutLoading: selectSignOutLoading,
+  signOutError: selectSignOutError,
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+  handleSignOut: () => dispatch(handleSignOut()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

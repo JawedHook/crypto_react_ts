@@ -1,8 +1,11 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import { logInAsync, LogInResult } from 'expo-google-app-auth';
 
 import firebaseConfig from '../../config/firebase.config';
+import { User } from '../models/user.model';
+import googleAuthConfig from '../../config/google-auth.config';
 
 firebase.initializeApp(firebaseConfig);
 
@@ -21,10 +24,7 @@ export const logout = (): Promise<void> => {
   return auth.signOut();
 };
 
-export const createUserProfileDocument = async (
-  userAuth: firebase.User | null,
-  additionalData?: any,
-): Promise<firebase.firestore.DocumentReference | undefined> => {
+export const createUserProfileDocument = async (userAuth: firebase.User | null, additionalData?: any): Promise<User> => {
   if (!userAuth) {
     return;
   }
@@ -46,15 +46,27 @@ export const createUserProfileDocument = async (
         ...additionalData,
       });
     }
+
+    const userDocumentSnapshot: firebase.firestore.DocumentSnapshot = await userRef?.get();
+    return new User(userDocumentSnapshot);
   } catch (err) {
     throw new Error(err);
   }
-
-  return userRef;
 };
 
-export const googleProvider: firebase.auth.GoogleAuthProvider_Instance = new firebase.auth.GoogleAuthProvider();
-googleProvider.setCustomParameters({ prompt: 'select_account' });
-export const signInWithGoole = async (): Promise<firebase.auth.UserCredential> => auth.signInWithPopup(googleProvider);
+const getGoogleCredential = async (): Promise<firebase.auth.OAuthCredential> => {
+  const googleProvider = firebase.auth.GoogleAuthProvider;
+  const result: LogInResult = await logInAsync(googleAuthConfig);
+  if (result.type === 'success') {
+    return googleProvider.credential(result.idToken, result.accessToken);
+  } else {
+    throw new Error('Authentification with google failed !');
+  }
+};
+
+export const loginWithGoogle = async (): Promise<firebase.auth.UserCredential> => {
+  const credential: firebase.auth.OAuthCredential = await getGoogleCredential();
+  return auth.signInWithCredential(credential);
+};
 
 export default firebase;
