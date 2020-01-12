@@ -8,6 +8,8 @@ import App from './src/app';
 import store from './src/redux/store';
 
 export default function Main() {
+  console.ignoredYellowBox = ['Setting a timer', 'Warning: componentWillReceiveProps'];
+
   return (
     <Provider store={store}>
       <PaperProvider>
