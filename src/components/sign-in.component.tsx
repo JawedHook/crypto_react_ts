@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { View, Text, StyleSheet } from 'react-native';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { TextInput, HelperText, Button, Divider } from 'react-native-paper';
+import { View, StyleSheet } from 'react-native';
+import { TextInput, HelperText, Button, Divider, DefaultTheme } from 'react-native-paper';
 
 import { handleSignIn, handleSignInWithGoogle } from '../redux/user/user.actions';
 import { selectSignInError, selectSignInLoading, selectSignInWithGoogleLoading } from '../redux/user/user.selectors';
+import Layout from './layout.component';
 
 interface IProps {
   signInError: string | null;
@@ -24,7 +24,7 @@ const SignIn: React.FC<IProps> = ({ handleSignIn, handleSignInWithGoogle, signIn
   const hasPasswordError = (): boolean => password.length < 6 && password.length !== 0;
 
   return (
-    <View>
+    <Layout>
       <View style={styles.input}>
         <TextInput label="Email" error={hasEmailError()} placeholder="Your Email" value={email} onChangeText={setEmail} />
         {hasEmailError() && <HelperText type="error">Email address is invalid !</HelperText>}
@@ -40,15 +40,21 @@ const SignIn: React.FC<IProps> = ({ handleSignIn, handleSignInWithGoogle, signIn
         />
         {hasPasswordError() && <HelperText type="error">Password to short !</HelperText>}
       </View>
-      <Button loading={signInLoading} disabled={signInLoading} mode="contained" onPress={() => handleSignIn(email, password)}>
+      <Button
+        icon="login"
+        loading={signInLoading}
+        disabled={signInLoading || signInWithGoogleLoading}
+        mode="contained"
+        onPress={() => handleSignIn(email, password)}>
         Signin
       </Button>
       <Divider style={styles.divider} />
       <Button
         loading={signInWithGoogleLoading}
-        disabled={signInWithGoogleLoading}
+        disabled={signInWithGoogleLoading || signInLoading}
         icon="google"
         mode="contained"
+        color={DefaultTheme.colors.accent}
         onPress={handleSignInWithGoogle}>
         Signin with google
       </Button>
@@ -57,7 +63,7 @@ const SignIn: React.FC<IProps> = ({ handleSignIn, handleSignInWithGoogle, signIn
           {signInError}
         </HelperText>
       )}
-    </View>
+    </Layout>
   );
 };
 

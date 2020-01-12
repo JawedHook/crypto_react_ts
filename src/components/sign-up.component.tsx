@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 
 import { handleSignUp } from '../redux/user/user.actions';
 import { selectSignUpError, selectSignUpLoading } from '../redux/user/user.selectors';
+import Layout from './layout.component';
 
 interface IProps {
   signUpError: string | null;
@@ -23,7 +23,7 @@ const SignUp: React.FC<IProps> = ({ signUpError, signUpLoading, handleSignUp }) 
   const hasPasswordError = (): boolean => password.length < 6 && password.length !== 0;
 
   return (
-    <View>
+    <Layout>
       <TextInput style={styles.input} label="Display Name" placeholder="Your Name" value={displayName} onChangeText={setDisplayName} />
       <View style={styles.input}>
         <TextInput label="Email" error={hasEmailError()} placeholder="Your Email" value={email} onChangeText={setEmail} />
@@ -40,7 +40,12 @@ const SignUp: React.FC<IProps> = ({ signUpError, signUpLoading, handleSignUp }) 
         />
         {hasPasswordError() && <HelperText type="error">Password to short !</HelperText>}
       </View>
-      <Button loading={signUpLoading} disabled={signUpLoading} mode="contained" onPress={() => handleSignUp(displayName, email, password)}>
+      <Button
+        icon="account"
+        loading={signUpLoading}
+        disabled={signUpLoading}
+        mode="contained"
+        onPress={() => handleSignUp(displayName, email, password)}>
         Signup
       </Button>
       {signUpError && (
@@ -48,7 +53,7 @@ const SignUp: React.FC<IProps> = ({ signUpError, signUpLoading, handleSignUp }) 
           {signUpError}
         </HelperText>
       )}
-    </View>
+    </Layout>
   );
 };
 

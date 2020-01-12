@@ -12,8 +12,8 @@ const Layout: React.FC<IProps> = ({ children, style }) => {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    paddingTop: 40,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    paddingTop: 25,
   },
 });
 

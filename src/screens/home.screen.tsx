@@ -52,7 +52,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading,
   return (
     <Layout>
       {currentUser && <Title>Hi {currentUser.displayName} !</Title>}
-      <Button loading={signOutLoading} disabled={signOutLoading} mode="contained" onPress={handleSignOut}>
+      <Button icon="logout" loading={signOutLoading} disabled={signOutLoading} mode="contained" onPress={handleSignOut}>
         Logout
       </Button>
       {signOutError && <Text style={{ color: 'red' }}>{signOutError}</Text>}

@@ -1,15 +1,17 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { TabView, SceneMap, NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
+import { Subheading, DefaultTheme } from 'react-native-paper';
 
-import Layout from '../components/layout.component';
 import SignIn from '../components/sign-in.component';
 import SignUp from '../components/sign-up.component';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 interface ILoginRoutes {
   key: string;
   title: string;
 }
+
+type State = NavigationState<ILoginRoutes>;
 
 const LoginScreen: React.FC = () => {
   const [index, setIndex] = React.useState<number>(0);
@@ -18,7 +20,24 @@ const LoginScreen: React.FC = () => {
     { key: 'signup', title: 'Sign up' },
   ]);
 
-  const initialLayout: { width: number } = { width: Dimensions.get('window').width };
+  const insets = useSafeArea();
+
+  const renderLabel = ({ route }: { route: ILoginRoutes; color: string }) => (
+    <Subheading style={{ color: DefaultTheme.colors.accent }}>{route.title}</Subheading>
+  );
+
+  const renderTabBar = (props: SceneRendererProps & { navigationState: State }) => {
+    return (
+      <TabBar
+        {...props}
+        indicatorStyle={{
+          backgroundColor: DefaultTheme.colors.accent,
+        }}
+        renderLabel={renderLabel}
+        style={{ backgroundColor: DefaultTheme.colors.primary, marginTop: insets.top }}
+      />
+    );
+  };
 
   const renderScene: any = SceneMap({
     signin: SignIn,
@@ -26,14 +45,7 @@ const LoginScreen: React.FC = () => {
   });
 
   return (
-    <Layout>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-      />
-    </Layout>
+    <TabView lazy navigationState={{ index, routes }} renderTabBar={renderTabBar} renderScene={renderScene} onIndexChange={setIndex} />
   );
 };
 

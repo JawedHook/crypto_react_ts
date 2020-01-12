@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
 import { View } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, DefaultTheme } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { auth, createUserProfileDocument } from '../services/firebase.service';
 import { User } from '../models/user.model';
@@ -30,7 +30,8 @@ const LoadingScreen: React.FC<IProps> = ({ navigation, authSuccess }) => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" />
+      <Icon size={120} name="currency-btc" color={DefaultTheme.colors.primary} style={{ marginBottom: 30 }} />
+      <ActivityIndicator size="small" />
     </View>
   );
 };
