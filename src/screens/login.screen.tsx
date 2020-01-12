@@ -1,45 +1,51 @@
-import React, { useState } from 'react';
-import { Text, View, SafeAreaView } from 'react-native';
-import { Button, InputItem } from '@ant-design/react-native';
-import { NavigationInjectedProps } from 'react-navigation';
+import React from 'react';
+import { TabView, SceneMap, NavigationState, SceneRendererProps, TabBar } from 'react-native-tab-view';
+import { Subheading, DefaultTheme } from 'react-native-paper';
 
-import { register, createUserProfileDocument } from '../services/firebase.service';
+import SignIn from '../components/sign-in.component';
+import SignUp from '../components/sign-up.component';
+import { useSafeArea } from 'react-native-safe-area-context';
 
-const LoginScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
-  const [displayName, setDisplayName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [firebaseError, setFirebaseError] = useState<string | null>(null);
+interface ILoginRoutes {
+  key: string;
+  title: string;
+}
 
-  const handleSubmit = async () => {
-    try {
-      const { user } = await register(email, password);
+type State = NavigationState<ILoginRoutes>;
 
-      const userRef = await createUserProfileDocument(user, { displayName });
+const LoginScreen: React.FC = () => {
+  const [index, setIndex] = React.useState<number>(0);
+  const [routes] = React.useState<ILoginRoutes[]>([
+    { key: 'signin', title: 'Sign in' },
+    { key: 'signup', title: 'Sign up' },
+  ]);
 
-      const userDocumentSnapshot = await userRef?.get();
+  const insets = useSafeArea();
 
-      console.log('currentUser:', { id: userDocumentSnapshot?.id, ...userDocumentSnapshot?.data() });
-      navigation.navigate('main');
-    } catch (err) {
-      setFirebaseError(err.message || err.toString());
-    }
+  const renderLabel = ({ route }: { route: ILoginRoutes; color: string }) => (
+    <Subheading style={{ color: DefaultTheme.colors.accent }}>{route.title}</Subheading>
+  );
+
+  const renderTabBar = (props: SceneRendererProps & { navigationState: State }) => {
+    return (
+      <TabBar
+        {...props}
+        indicatorStyle={{
+          backgroundColor: DefaultTheme.colors.accent,
+        }}
+        renderLabel={renderLabel}
+        style={{ backgroundColor: DefaultTheme.colors.primary, marginTop: insets.top }}
+      />
+    );
   };
 
+  const renderScene: any = SceneMap({
+    signin: SignIn,
+    signup: SignUp,
+  });
+
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Login view</Text>
-        <Text>Name: {displayName}</Text>
-        <Text>Email: {email}</Text>
-        <Text>Password: {password}</Text>
-        <InputItem value={displayName} onChange={setDisplayName} placeholder="Display Name" />
-        <InputItem value={email} onChange={setEmail} placeholder="Email" />
-        <InputItem value={password} onChange={setPassword} type="password" placeholder="Password" />
-        <Button onPress={handleSubmit}>Register</Button>
-        {firebaseError && <Text>{firebaseError}</Text>}
-      </View>
-    </SafeAreaView>
+    <TabView lazy navigationState={{ index, routes }} renderTabBar={renderTabBar} renderScene={renderScene} onIndexChange={setIndex} />
   );
 };
 

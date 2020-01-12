@@ -37,15 +37,15 @@ const coinApiService = {
       },
     });
   },
-  getCoin: (symbol:string): Promise<any> => {
+  getCoin: (symbol: string): Promise<any> => {
     return instance().get<string, AxiosRequestConfig>(coinUrl, {
       params: {
         key: apiConfig.currencyApiToken,
         pref: 'EUR',
-        symbol
+        symbol,
       },
     });
-  }
+  },
 };
 
 export default coinApiService;

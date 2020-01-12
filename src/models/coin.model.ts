@@ -1,4 +1,4 @@
-export class Coins {
+export class Coin {
   symbol: string;
   name: string;
   rank: number;
