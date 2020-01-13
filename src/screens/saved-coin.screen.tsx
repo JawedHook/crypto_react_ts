@@ -1,13 +1,33 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { withNavigation, NavigationInjectedProps } from 'react-navigation';
+import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
+import { Appbar, DefaultTheme, Button } from 'react-native-paper';
 
-const SavedCoinScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
+import Layout from '../components/layout.component';
+
+interface IProps extends NavigationInjectedProps {}
+
+const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ navigation }) => {
   return (
-    <View>
+    <Layout>
       <Text>Saved coin view</Text>
-    </View>
+      <Button onPress={() => navigation.navigate('coin')}>Go to coin</Button>
+    </Layout>
   );
 };
 
-export default withNavigation(SavedCoinScreen);
+SavedCoinScreen.navigationOptions = {
+  title: 'Saved',
+  header: ({ scene, previous, navigation }) => {
+    const { options } = scene.descriptor;
+    const title =
+      options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.routeName;
+    return (
+      <Appbar.Header style={{ backgroundColor: DefaultTheme.colors.accent }}>
+        <Appbar.Content title={title} />
+      </Appbar.Header>
+    );
+  },
+};
+
+export default SavedCoinScreen;

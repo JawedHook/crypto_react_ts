@@ -7,21 +7,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SavedCoinScreen from '../screens/saved-coin.screen';
 import CoinScreen from '../screens/coin.screen';
 import HomeScreen from '../screens/home.screen';
+import AccountScreen from '../screens/account.screen';
 
 const CoinsNavigation = createStackNavigator(
   {
-    coins: {
-      screen: HomeScreen,
-      navigationOptions: {
-        headerTitle: 'Accueil',
-      },
-    },
-    coin: {
-      screen: CoinScreen,
-      navigationOptions: {
-        headerTitle: 'Saved',
-      },
-    },
+    coins: HomeScreen,
+    coin: CoinScreen,
   },
   {
     initialRouteName: 'coins',
@@ -30,18 +21,8 @@ const CoinsNavigation = createStackNavigator(
 
 const SavedNavigation = createStackNavigator(
   {
-    savedCoin: {
-      screen: SavedCoinScreen,
-      navigationOptions: {
-        headerTitle: 'Accueil',
-      },
-    },
-    coin: {
-      screen: CoinScreen,
-      navigationOptions: {
-        headerTitle: 'saved',
-      },
-    },
+    savedCoin: SavedCoinScreen,
+    coin: CoinScreen,
   },
   {
     initialRouteName: 'savedCoin',
@@ -50,6 +31,14 @@ const SavedNavigation = createStackNavigator(
 
 const MainNavigation: NavigationMaterialBottomTabScreenComponent = createMaterialBottomTabNavigator(
   {
+    saved: {
+      screen: SavedNavigation,
+      navigationOptions: {
+        tabBarLabel: 'Saved',
+        tabBarIcon: ({ tintColor }) => <Icon color={tintColor} size={25} name={'heart'} />,
+        tabBarColor: DefaultTheme.colors.accent,
+      },
+    },
     coins: {
       screen: CoinsNavigation,
       navigationOptions: {
@@ -58,13 +47,8 @@ const MainNavigation: NavigationMaterialBottomTabScreenComponent = createMateria
         tabBarColor: DefaultTheme.colors.primary,
       },
     },
-    saved: {
-      screen: SavedNavigation,
-      navigationOptions: {
-        tabBarLabel: 'Saved',
-        tabBarIcon: ({ tintColor }) => <Icon color={tintColor} size={25} name={'heart'} />,
-        tabBarColor: DefaultTheme.colors.accent,
-      },
+    account: {
+      screen: AccountScreen,
     },
   },
   {

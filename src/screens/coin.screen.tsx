@@ -1,15 +1,34 @@
 import React from 'react';
 import { Text, View } from 'react-native';
-import { withNavigation, NavigationInjectedProps } from 'react-navigation';
-import { Button } from 'react-native-paper';
+import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
+import { Button, Appbar, DefaultTheme } from 'react-native-paper';
+import Layout from '../components/layout.component';
 
-const CoinScreen: React.FC<NavigationInjectedProps> = ({ navigation }) => {
+interface IProps extends NavigationInjectedProps {}
+
+const CoinScreen: NavigationScreenComponent<any, IProps> = ({ navigation }) => {
   return (
-    <View>
+    <Layout>
       <Text>Coin view</Text>
-      <Button onPress={() => navigation.navigate('Main')}>Go to main</Button>
-    </View>
+      <Button onPress={() => navigation.navigate('coins')}>Go to main</Button>
+    </Layout>
   );
 };
 
-export default withNavigation(CoinScreen);
+CoinScreen.navigationOptions = {
+  title: 'Coin',
+  header: ({ scene, previous, navigation }) => {
+    const backgroundColor = previous.descriptor.options.title === 'Home' ? DefaultTheme.colors.primary : DefaultTheme.colors.accent;
+    const { options } = scene.descriptor;
+    const title =
+      options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.routeName;
+    return (
+      <Appbar.Header style={{ backgroundColor }}>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title={title} />
+      </Appbar.Header>
+    );
+  },
+};
+
+export default CoinScreen;

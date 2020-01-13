@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Text, ScrollView, View, TouchableOpacity } from 'react-native';
-import { NavigationInjectedProps } from 'react-navigation';
+import { Text, ScrollView, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { NavigationInjectedProps, NavigationScreenComponent } from 'react-navigation';
 
 import coinApiService from '../services/coin-api.service';
 import Layout from '../components/layout.component';
-import { Button, Card, Title, Paragraph, Caption } from 'react-native-paper';
+import { Button, Card, Title, Paragraph, Caption, Appbar, DefaultTheme } from 'react-native-paper';
 import { Coin } from '../models/coin.model';
 import { User } from '../models/user.model';
-import { selectCurrentUser, selectSignOutLoading, selectSignOutError } from '../redux/user/user.selectors';
-import { handleSignOut } from '../redux/user/user.actions';
+import { selectCurrentUser } from '../redux/user/user.selectors';
 
 interface IProps extends NavigationInjectedProps {
   currentUser: User;
@@ -19,7 +18,7 @@ interface IProps extends NavigationInjectedProps {
   handleSignOut: () => void;
 }
 
-const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading, signOutError, handleSignOut }) => {
+const HomeScreen: NavigationScreenComponent<any, IProps> = ({ navigation, currentUser }) => {
   const onFetchDatas: any = async (page: number = 1, startFetch: (coins: any, pageLimit: number) => void, abortFetch: () => void) => {
     try {
       const coinsResponse: any = await coinApiService.getCoins();
@@ -52,10 +51,7 @@ const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading,
   return (
     <Layout>
       {currentUser && <Title>Hi {currentUser.displayName} !</Title>}
-      <Button icon="logout" loading={signOutLoading} disabled={signOutLoading} mode="contained" onPress={handleSignOut}>
-        Logout
-      </Button>
-      {signOutError && <Text style={{ color: 'red' }}>{signOutError}</Text>}
+      <Button onPress={() => navigation.navigate('coin')}>Go to coin</Button>
       <Card>
         <Card.Title
           title="Card Title"
@@ -77,14 +73,22 @@ const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading,
   );
 };
 
+HomeScreen.navigationOptions = {
+  title: 'Home',
+  header: ({ scene, previous, navigation }) => {
+    const { options } = scene.descriptor;
+    const title =
+      options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.routeName;
+    return (
+      <Appbar.Header style={{ backgroundColor: DefaultTheme.colors.primary }}>
+        <Appbar.Content title={title} />
+      </Appbar.Header>
+    );
+  },
+};
+
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  signOutLoading: selectSignOutLoading,
-  signOutError: selectSignOutError,
 });
 
-const mapDispatchToProps = (dispatch: any) => ({
-  handleSignOut: () => dispatch(handleSignOut()),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
+export default connect(mapStateToProps)(HomeScreen);
