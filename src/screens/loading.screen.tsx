@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { NavigationInjectedProps } from 'react-navigation';
-import { ActivityIndicator, DefaultTheme } from 'react-native-paper';
+import { ActivityIndicator, DefaultTheme, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { auth, createUserProfileDocument } from '../services/firebase.service';
