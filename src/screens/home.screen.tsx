@@ -26,21 +26,21 @@ const HomeScreen: React.FC<IProps> = ({ navigation, currentUser, signOutLoading,
 
   const [coins, setCoins] = useState<Coin[]>([]);
 
-    useEffect(() => {
-        const fetchCoinsDatas: any = async () => {
-            try {
-                const coinsResponse: any = await coinApiService.getCoins();
-                setCoins(coinsResponse.data.coins);
-            } catch (err) {
-                console.log(err)
-            }
-        };
-        fetchCoinsDatas();
-    }, [])
+  useEffect(() => {
+    const fetchCoinsDatas: any = async () => {
+      try {
+        const coinsResponse: any = await coinApiService.getCoins();
+        setCoins(coinsResponse.data.coins);
+      } catch (err) {
+        console.log(err)
+      }
+    };
+    fetchCoinsDatas();
+  }, [])
 
   return (
     <Layout>
-      <CoinList coins={coins}/>
+      <CoinList coins={coins} />
     </Layout>
   );
 };
