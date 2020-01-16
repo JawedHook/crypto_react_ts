@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Appbar, DefaultTheme, ActivityIndicator, Title, Subheading, Caption, Divider, Switch } from 'react-native-paper';
@@ -11,6 +11,8 @@ import { selectCurrentUser, selectSignOutLoading, selectSignOutError } from '../
 import { handleSignOut } from '../redux/user/user.actions';
 import { User } from '../models/user.model';
 import Layout from '../components/layout.component';
+import { setStorageUseTouchId } from '../services/storage.service';
+import { firestore } from '../services/firebase.service';
 
 interface IProps extends NavigationInjectedProps {
   currentUser: User;
@@ -20,7 +22,21 @@ interface IProps extends NavigationInjectedProps {
 }
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
-  const [isSwitchOn, setIsSwitchOn] = useState<boolean>(false);
+  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser?.useTouchId);
+  const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
+
+  const handleSwitchUseTouchId = async (newValue: boolean): Promise<void> => {
+    try {
+      if (useTouchIdLoading) return;
+      setUseTouchIdLoading(true);
+      await firestore.doc(`users/${currentUser.id}`).update({ useTouchId: newValue });
+      await setStorageUseTouchId(newValue);
+      setUseTouchId(newValue);
+      setUseTouchIdLoading(false);
+    } catch (err) {
+      console.log('Cannot switch value : ', err.message || err.toString());
+    }
+  };
 
   return (
     <>
@@ -38,8 +54,10 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
           <Subheading>{currentUser.email}</Subheading>
           <Caption>Created {formatDistanceToNow(currentUser.createdAt)} ago</Caption>
           <Divider style={styles.divider} />
-          <Subheading style={styles.isSwitchOnTitle}>Use touchID</Subheading>
-          <Switch value={isSwitchOn} onValueChange={() => setIsSwitchOn(!isSwitchOn)} />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Subheading style={styles.isSwitchOnTitle}>Use touchID</Subheading>
+            <Switch value={useTouchId} onValueChange={handleSwitchUseTouchId} />
+          </View>
         </Layout>
       )}
     </>

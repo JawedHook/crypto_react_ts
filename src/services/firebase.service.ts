@@ -43,6 +43,7 @@ export const createUserProfileDocument = async (userAuth: firebase.User | null, 
         email,
         createdAt,
         updatedAt,
+        useTouchId: false,
         ...additionalData,
       });
     }
