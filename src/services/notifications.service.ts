@@ -3,6 +3,9 @@ import * as Permissions from 'expo-permissions';
 import { firestore } from '../services/firebase.service';
 import { User } from '../models/user.model';
 import { setStoragePhoneToken, removeStoragePhoneToken } from './storage.service';
+import axios from 'axios';
+
+const NOTIFICATION_URL = 'https://exp.host/--/api/v2/push/send'
 
 const notificationsService = {
     checkNotificationsPerm: async (currentUser: User) => {
@@ -42,6 +45,17 @@ const notificationsService = {
             await removeStoragePhoneToken();
         } catch (err) {
             console.log(err.message || err.toString());
+        }
+    },
+    sendNotification: async (currentUser: User, { title, body }) => {
+        try {
+            await axios.post(NOTIFICATION_URL,{
+                to: currentUser.phoneToken,
+                title,
+                body
+            })
+        } catch (err) {
+            console.log('console error send: ', err)
         }
     }
 }

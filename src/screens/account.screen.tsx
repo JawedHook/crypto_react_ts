@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Appbar, DefaultTheme, ActivityIndicator, Title, Subheading, Caption, Divider, Switch } from 'react-native-paper';
+import { Appbar, DefaultTheme, ActivityIndicator, Title, Subheading, Caption, Divider, Switch, Button } from 'react-native-paper';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
@@ -24,7 +24,7 @@ interface IProps extends NavigationInjectedProps {
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
   const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ?.useTouchId);
-  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ?.phoneToken);
+  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ?.phoneToken !== null);
   const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
   const [usePhoneTokenLoading, setUsePhoneTokenLoading] = useState<boolean>(false);
 
@@ -74,9 +74,13 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
           { text: 'Retry', onPress: () => handleSwitchPhoneToken(newValue) },
         ],
         { cancelable: false },
-        );
-        setPhoneToken(!newValue)
-      }
+      );
+      setPhoneToken(!newValue)
+    }
+  }
+
+  const sendNotification = async () => {
+    notificationsService.sendNotification(currentUser, { title: 'Yes', body: 'oui' })
   }
 
   return (
@@ -103,6 +107,7 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
             <Subheading style={styles.isSwitchOnTitle}>Authorize notifications</Subheading>
             <Switch value={usePhoneToken} onValueChange={handleSwitchPhoneToken} />
           </View>
+          <Button onPress={() => sendNotification()}>Send notification</Button>
         </Layout>
       )}
     </>

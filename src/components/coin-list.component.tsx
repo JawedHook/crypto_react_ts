@@ -66,13 +66,15 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation, currentUser }
     };
 
     const headerComponent: any = () => {
-        return <Title style={{ marginBottom: 15, paddingTop:20 }}>Hi {currentUser.displayName} !</Title>
+        return currentUser ?
+            <Title style={{ marginBottom: 15, paddingTop: 20 }}>Hi {currentUser.displayName} !</Title>
+            : null
     }
 
     return (
         coins.length > 0 ?
             <FlatList
-                style={{ paddingRight: 20}}
+                style={{ paddingRight: 20 }}
                 ListHeaderComponent={() => headerComponent()}
                 data={coins}
                 renderItem={(coinItem) => coinCard(coinItem)}
@@ -84,6 +86,6 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation, currentUser }
 
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
-  });
+});
 
 export default connect(mapStateToProps)(withNavigation(CoinList));
