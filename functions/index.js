@@ -9,6 +9,7 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
-    
+exports.sendNotifications = functions.https.onRequest((request, response) => {
+  response.set('Access-Control-Allow-Origin', '*');
+  let usersRef = firestore.collection('users').get()
 });
