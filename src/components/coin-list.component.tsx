@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
-
-import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { Facebook } from 'react-content-loader/native'
-import { Card, Button, DefaultTheme, FAB } from 'react-native-paper';
-
-import coinApiService from '../services/coin-api.service';
-import { Coin } from '../models/coin.model';
+import React from 'react';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
+import { Card, Button, DefaultTheme, FAB, IconButton } from 'react-native-paper';
+import { FlatList, Text } from 'react-native';
+
+import { Facebook } from 'react-content-loader/native'
+
+import { Coin } from '../models/coin.model';
 
 interface IProps extends NavigationInjectedProps {
     coins: Coin[];
@@ -52,7 +51,7 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
                     <Text>Rank: #{coin.rank}</Text>
                 </Card.Content>
                 <Card.Actions>
-                    <Button onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
+                    <IconButton onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
                     <Button onPress={() => openCoinDetail(coin.symbol)}>Details</Button>
                 </Card.Actions>
             </Card>

@@ -14,6 +14,8 @@ export const selectSignInLoading = createSelector([selectUser], user => user.sig
 
 export const selectSignInWithGoogleLoading = createSelector([selectUser], user => user.signInWithGoogleLoading);
 
+export const selectSignInWithTouchIdLoading = createSelector([selectUser], user => user.signInWithTouchIdLoading);
+
 export const selectSignUpLoading = createSelector([selectUser], user => user.signUpLoading);
 
 export const selectSignOutLoading = createSelector([selectUser], user => user.signOutLoading);

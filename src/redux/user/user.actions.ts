@@ -1,9 +1,8 @@
-import { NavigationActions } from 'react-navigation';
-
 import { UserActionTypes } from './user.types';
 import { User } from '../../models/user.model';
 import NavigationService from '../../services/navigation.service';
-import { createUserProfileDocument, login, register, loginWithGoogle, logout } from '../../services/firebase.service';
+import { createUserProfileDocument, login, register, loginWithGoogle, logout, auth, firestore } from '../../services/firebase.service';
+import { setStorageAuthUserId, setStorageUseTouchId, getStorageAuthUserId } from '../../services/storage.service';
 
 export const authSuccess = (currentUser: User) => ({
   type: UserActionTypes.AUTH_SUCCESS,
@@ -37,6 +36,10 @@ export const signInWithGoogleStart = () => ({
   type: UserActionTypes.SIGN_IN_WITH_GOOGLE_START,
 });
 
+export const signInWithTouchIdStart = () => ({
+  type: UserActionTypes.SIGN_IN_WITH_TOUCH_ID_START,
+});
+
 export const signUpStart = () => ({
   type: UserActionTypes.SIGN_UP_START,
 });
@@ -46,11 +49,13 @@ export const signOutStart = () => ({
 });
 
 export const handleSignIn = (email: string, password: string) => {
-  return async (dispatch: any) => {
+  return async (dispatch: any): Promise<void> => {
     try {
       dispatch(signInStart());
       const { user }: firebase.auth.UserCredential = await login(email, password);
       const currentUser: User = await createUserProfileDocument(user);
+      await setStorageAuthUserId(currentUser.id);
+      await setStorageUseTouchId(currentUser.useTouchId);
       dispatch(authSuccess(currentUser));
       NavigationService.navigate('main');
     } catch (err) {
@@ -60,11 +65,13 @@ export const handleSignIn = (email: string, password: string) => {
 };
 
 export const handleSignInWithGoogle = () => {
-  return async (dispatch: any) => {
+  return async (dispatch: any): Promise<void> => {
     try {
       dispatch(signInWithGoogleStart());
       const { user }: firebase.auth.UserCredential = await loginWithGoogle();
       const currentUser: User = await createUserProfileDocument(user);
+      await setStorageAuthUserId(currentUser.id);
+      await setStorageUseTouchId(currentUser.useTouchId);
       dispatch(authSuccess(currentUser));
       NavigationService.navigate('main');
     } catch (err) {
@@ -74,11 +81,13 @@ export const handleSignInWithGoogle = () => {
 };
 
 export const handleSignUp = (displayName: string, email: string, password: string) => {
-  return async (dispatch: any) => {
+  return async (dispatch: any): Promise<void> => {
     try {
       dispatch(signUpStart());
       const { user }: firebase.auth.UserCredential = await register(email, password);
       const currentUser: User = await createUserProfileDocument(user, { displayName });
+      await setStorageAuthUserId(currentUser.id);
+      await setStorageUseTouchId(currentUser.useTouchId);
       dispatch(authSuccess(currentUser));
       NavigationService.navigate('main');
     } catch (err) {
@@ -87,8 +96,25 @@ export const handleSignUp = (displayName: string, email: string, password: strin
   };
 };
 
+export const handleSignInWithTouchId = () => {
+  return async (dispatch: any): Promise<void> => {
+    try {
+      dispatch(signInWithTouchIdStart());
+      const authUserId = await getStorageAuthUserId();
+      const userDocumentSnapshot: firebase.firestore.DocumentSnapshot = await firestore.doc(`users/${authUserId}`).get();
+      const currentUser = new User(userDocumentSnapshot);
+      await setStorageAuthUserId(currentUser.id);
+      await setStorageUseTouchId(currentUser.useTouchId);
+      dispatch(authSuccess(currentUser));
+      NavigationService.navigate('main');
+    } catch (err) {
+      dispatch(signInFailed(err.message || err.toString()));
+    }
+  };
+};
+
 export const handleSignOut = () => {
-  return async (dispatch: any) => {
+  return async (dispatch: any): Promise<void> => {
     try {
       dispatch(signOutStart());
       await logout();

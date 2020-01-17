@@ -5,6 +5,7 @@ interface IInitialState {
   currentUser: User;
   signInLoading: boolean;
   signInWithGoogleLoading: boolean;
+  signInWithTouchIdLoading: boolean;
   signUpLoading: boolean;
   signOutLoading: boolean;
   signInError: string | null;
@@ -16,6 +17,7 @@ const INITIAL_STATE: IInitialState = {
   currentUser: null,
   signInLoading: false,
   signInWithGoogleLoading: false,
+  signInWithTouchIdLoading: false,
   signUpLoading: false,
   signOutLoading: false,
   signInError: null,
@@ -35,6 +37,11 @@ const userReducer = (state = INITIAL_STATE, action: any) => {
         ...state,
         signInWithGoogleLoading: true,
       };
+    case UserActionTypes.SIGN_IN_WITH_TOUCH_ID_START:
+      return {
+        ...state,
+        signInWithTouchIdLoading: true,
+      };
     case UserActionTypes.SIGN_UP_START:
       return {
         ...state,
@@ -51,6 +58,7 @@ const userReducer = (state = INITIAL_STATE, action: any) => {
         currentUser: null,
         signInLoading: false,
         signInWithGoogleLoading: false,
+        signInWithTouchIdLoading: false,
         signInError: action.payload,
       };
     case UserActionTypes.SIGN_UP_FAILED:
@@ -80,6 +88,7 @@ const userReducer = (state = INITIAL_STATE, action: any) => {
         signInLoading: false,
         signUpLoading: false,
         signInWithGoogleLoading: false,
+        signInWithTouchIdLoading: false,
         signInError: null,
         signUpError: null,
       };
