@@ -1,17 +1,24 @@
-import React from 'react';
-import { withNavigation, NavigationInjectedProps } from 'react-navigation';
-import { Card, Button, DefaultTheme, FAB, IconButton } from 'react-native-paper';
-import { FlatList, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
 
+import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { Facebook } from 'react-content-loader/native'
+import { Card, Button, DefaultTheme, FAB, Title } from 'react-native-paper';
+
+import { selectCurrentUser } from '../redux/user/user.selectors';
+import coinApiService from '../services/coin-api.service';
+import { withNavigation, NavigationInjectedProps } from 'react-navigation';
 
 import { Coin } from '../models/coin.model';
+import { User } from '../models/user.model';
 
 interface IProps extends NavigationInjectedProps {
     coins: Coin[];
-  }
+    currentUser: User;
+}
 
-const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
+const CoinList: React.FC<IProps> = ({ children, coins, navigation, currentUser }) => {
 
     const SkeletonLoader = () => <Facebook />
 
@@ -51,16 +58,22 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
                     <Text>Rank: #{coin.rank}</Text>
                 </Card.Content>
                 <Card.Actions>
-                    <IconButton onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
+                    <Button onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
                     <Button onPress={() => openCoinDetail(coin.symbol)}>Details</Button>
                 </Card.Actions>
             </Card>
         );
     };
 
+    const headerComponent: any = () => {
+        return <Title style={{ marginBottom: 15, paddingTop:20 }}>Hi {currentUser.displayName} !</Title>
+    }
+
     return (
         coins.length > 0 ?
             <FlatList
+                style={{ paddingRight: 20}}
+                ListHeaderComponent={() => headerComponent()}
                 data={coins}
                 renderItem={(coinItem) => coinCard(coinItem)}
                 keyExtractor={(item: Coin) => item.symbol}
@@ -69,4 +82,8 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
     )
 }
 
-export default  withNavigation(CoinList);
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+  });
+
+export default connect(mapStateToProps)(withNavigation(CoinList));

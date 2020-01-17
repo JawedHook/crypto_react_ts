@@ -5,13 +5,15 @@ import { createStructuredSelector } from 'reselect';
 import { NavigationScreenComponent } from 'react-navigation';
 import coinApiService from '../services/coin-api.service';
 import Layout from '../components/layout.component';
-import { Title, DefaultTheme, Appbar } from 'react-native-paper';
+import { DefaultTheme, Appbar } from 'react-native-paper';
 import CoinList from '../components/coin-list.component';
 
 import { Coin } from '../models/coin.model';
 import { User } from '../models/user.model';
 
 import { selectCurrentUser } from '../redux/user/user.selectors';
+
+import notificationsService from '../services/notifications.service';
 
 interface IProps {
   currentUser: User;
@@ -21,6 +23,7 @@ const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => 
   const [coins, setCoins] = useState<Coin[]>([]);
 
   useEffect(() => {
+    notificationsService.checkNotificationsPerm(currentUser);
     const fetchCoinsDatas: any = async () => {
       try {
         const coinsResponse: any = await coinApiService.getCoins();
@@ -31,10 +34,9 @@ const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => 
     };
     fetchCoinsDatas();
   }, []);
-
+  
   return (
-    <Layout>
-      {currentUser && <Title style={{ marginBottom: 15 }}>Hi {currentUser.displayName} !</Title>}
+    <Layout style={{ paddingTop:0, paddingRight:0 }}>
       <CoinList coins={coins} />
     </Layout>
   );

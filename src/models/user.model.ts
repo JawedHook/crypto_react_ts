@@ -8,9 +8,10 @@ export class User {
   useTouchId: boolean;
   createdAt: number | Date;
   updatedAt: number | Date;
+  phoneToken: string;
 
   constructor(json: firebase.firestore.DocumentSnapshot) {
-    const { email, displayName, coins, useTouchId, createdAt, updatedAt } = json.data();
+    const { email, displayName, coins, useTouchId, createdAt, updatedAt, phoneToken } = json.data();
 
     this.id = json.id;
     this.email = email;
@@ -19,5 +20,6 @@ export class User {
     this.useTouchId = useTouchId || false;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.phoneToken = phoneToken || null;
   }
 }
