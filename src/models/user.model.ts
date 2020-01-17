@@ -1,4 +1,4 @@
-import { Coin } from './coin.model';
+import { Coin } from "./coin.model";
 
 export class User {
   id: string;

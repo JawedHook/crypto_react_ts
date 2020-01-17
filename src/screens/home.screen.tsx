@@ -35,7 +35,7 @@ const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => 
   return (
     <Layout>
       {currentUser && <Title style={{ marginBottom: 15 }}>Hi {currentUser.displayName} !</Title>}
-      <CoinList coins={coins} />
+      <CoinList coins={coins} fromHome/>
     </Layout>
   );
 };

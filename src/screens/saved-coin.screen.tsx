@@ -4,10 +4,17 @@ import { NavigationScreenComponent, NavigationInjectedProps } from 'react-naviga
 import { Appbar, DefaultTheme, Button } from 'react-native-paper';
 
 import Layout from '../components/layout.component';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../redux/user/user.selectors';
+import { connect } from 'react-redux';
+import { User } from '../models/user.model';
 
-interface IProps extends NavigationInjectedProps {}
+interface IProps extends NavigationInjectedProps {
+  currentUser : User
+}
 
-const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ navigation }) => {
+const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ navigation, currentUser }) => {
+  console.log(currentUser.coins)
   return (
     <Layout>
       <Text>Saved coin view</Text>
@@ -30,4 +37,8 @@ SavedCoinScreen.navigationOptions = {
   },
 };
 
-export default SavedCoinScreen;
+const mapStateToProps = createStructuredSelector({
+  currentUser : selectCurrentUser
+});
+
+export default connect(mapStateToProps)(SavedCoinScreen);

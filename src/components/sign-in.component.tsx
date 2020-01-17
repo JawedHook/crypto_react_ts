@@ -23,6 +23,7 @@ interface IProps {
   handleSignIn: (email: string, password: string) => void;
   handleSignInWithGoogle: () => void;
   handleSignInWithTouchId: () => void;
+  signInFailed: (err: string) => void;
 }
 
 const SignIn: React.FC<IProps> = ({
@@ -33,6 +34,7 @@ const SignIn: React.FC<IProps> = ({
   signInLoading,
   signInWithGoogleLoading,
   handleSignInWithTouchId,
+  signInFailed
 }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -180,6 +182,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   handleSignIn: (email: string, password: string) => dispatch(handleSignIn(email, password)),
   handleSignInWithGoogle: () => dispatch(handleSignInWithGoogle()),
   handleSignInWithTouchId: () => dispatch(handleSignInWithTouchId()),
+  signInFailed: (err: string) => dispatch(signInFailed(err)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

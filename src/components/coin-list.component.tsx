@@ -6,35 +6,35 @@ import { FlatList, Text } from 'react-native';
 import { Facebook } from 'react-content-loader/native'
 
 import { Coin } from '../models/coin.model';
+import { setUserCoin } from '../redux/user/user.actions';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../redux/user/user.selectors';
+import { User } from '../models/user.model';
 
 interface IProps extends NavigationInjectedProps {
     coins: Coin[];
+    fromHome : boolean,
+    currentUser : User,
+    setUserCoin: (currentUser: User) => void
   }
 
-const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
+const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, setUserCoin }) => {
 
     const SkeletonLoader = () => <Facebook />
 
-    const openCoinDetail: any = (symbol: string) => {
-        navigation.navigate('coin');
+    const openCoinDetail: any = (symbol: string): void => {
+        navigation.navigate('coin', {fromHome : fromHome, symbol });
     };
 
-    const saveCoin: any = (symbol: string) => {
-        // to do
-    }
+    const saveCoin = (coin: Coin): void => {
+        const {name, symbol} = coin
+        const savedCoin = new Coin({name, symbol, min:0, max:0})
 
-    const deltaCoinCard: any = (delta: string) => {
-        const icon = delta.includes('-') ? 'arrow-down' : 'arrow-up'
-        const color = delta.includes('-') ? DefaultTheme.colors.notification : DefaultTheme.colors.accent
-        return (
-            <FAB
-                icon={icon}
-                color={'white'}
-                label={`${delta}%`}
-                style={{ backgroundColor: color, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, marginRight: 10 }}
-                small
-            />
-        );
+        const userCoins = currentUser.coins;
+        const savedCoins: Coin[] = [...userCoins, savedCoin]
+        const newUser: User = {...currentUser, coins:savedCoins }
+        setUserCoin(newUser);
     }
 
     const coinCard: any = (coinItem: any) => {
@@ -43,15 +43,9 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
             <Card style={{ marginBottom: 15 }}>
                 <Card.Title
                     title={coin.name} subtitle={coin.symbol}
-                    right={() => deltaCoinCard(coin.delta_24h)}
                 />
-                <Card.Content>
-                    <Text>Price: {coin.price.split('.')[0]}€</Text>
-                    <Text>Delta: {coin.delta_24h}% last 24h</Text>
-                    <Text>Rank: #{coin.rank}</Text>
-                </Card.Content>
                 <Card.Actions>
-                    <IconButton onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
+                    <IconButton onPress={() => saveCoin(coin)} icon='heart-outline' color={DefaultTheme.colors.notification} />
                     <Button onPress={() => openCoinDetail(coin.symbol)}>Details</Button>
                 </Card.Actions>
             </Card>
@@ -68,5 +62,12 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation }) => {
             <SkeletonLoader />
     )
 }
+const mapStateToProps = createStructuredSelector({
+    currentUser : selectCurrentUser
+});
 
-export default  withNavigation(CoinList);
+const mapDispatchToProps = (dispatch: any) => ({
+    setUserCoin: (currentUser: User) => dispatch(setUserCoin(currentUser))
+})
+  
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigation(CoinList));
