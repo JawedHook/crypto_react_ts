@@ -31,7 +31,7 @@ export const removeStorageAuthUserId = async (): Promise<void> => {
   return AsyncStorage.removeItem(AUTH_USER_ID);
 };
 
-// AUTH USER
+// PHONE TOKEN
 export const setStoragePhoneToken = (phoneToken: string): Promise<void> => {
   return AsyncStorage.setItem(PHONE_TOKEN, phoneToken);
 };

@@ -23,8 +23,8 @@ interface IProps extends NavigationInjectedProps {
 }
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
-  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ?.useTouchId);
-  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ?.phoneToken !== null);
+  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ? currentUser.useTouchId : false);
+  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ? currentUser.phoneToken !== null : false);
   const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
   const [usePhoneTokenLoading, setUsePhoneTokenLoading] = useState<boolean>(false);
 
@@ -90,8 +90,8 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
         {signOutLoading ? (
           <ActivityIndicator style={{ marginRight: 15 }} size="small" color="white" />
         ) : (
-            <Appbar.Action size={20} icon="logout" onPress={handleSignOut} />
-          )}
+          <Appbar.Action size={20} icon="logout" onPress={handleSignOut} />
+        )}
       </Appbar.Header>
       {currentUser && (
         <Layout>

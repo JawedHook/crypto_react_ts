@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { Facebook } from 'react-content-loader/native'
-import { Card, Button, DefaultTheme, FAB, Title } from 'react-native-paper';
+import { Card, Button, DefaultTheme, FAB, Title, IconButton } from 'react-native-paper';
 
 import { selectCurrentUser } from '../redux/user/user.selectors';
 import coinApiService from '../services/coin-api.service';
@@ -58,7 +58,7 @@ const CoinList: React.FC<IProps> = ({ children, coins, navigation, currentUser }
                     <Text>Rank: #{coin.rank}</Text>
                 </Card.Content>
                 <Card.Actions>
-                    <Button onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
+                    <IconButton onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
                     <Button onPress={() => openCoinDetail(coin.symbol)}>Details</Button>
                 </Card.Actions>
             </Card>
