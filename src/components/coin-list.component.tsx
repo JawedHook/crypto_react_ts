@@ -1,6 +1,6 @@
 import React from 'react';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
-import { Card, Button, DefaultTheme, IconButton } from 'react-native-paper';
+import { Card, Button, DefaultTheme, IconButton, Title } from 'react-native-paper';
 import { FlatList } from 'react-native';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
@@ -20,6 +20,7 @@ interface IProps extends NavigationInjectedProps {
   currentUser: User;
   setUserCoin: (currentUser: User) => void;
   currentUserCoins: UserCoin[];
+  header: () => JSX.Element;
 }
 
 interface ICoinDetailParams {
@@ -29,7 +30,7 @@ interface ICoinDetailParams {
   max?: number;
 }
 
-const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, setUserCoin, currentUserCoins }) => {
+const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, setUserCoin, currentUserCoins, header }) => {
   const openCoinDetail: any = (coin: Coin): void => {
     let params: ICoinDetailParams = { fromHome, symbol: coin.symbol };
 
@@ -47,7 +48,6 @@ const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, 
     if (exist) return;
     const newUserCoins: UserCoin[] = [...userCoins, { symbol: coin.symbol, min: 0, max: 0 }];
     const newUser: User = { ...currentUser, coins: newUserCoins };
-
     await firestore.doc(`users/${currentUser.id}`).update({ coins: newUserCoins });
     setUserCoin(newUser);
   };
@@ -56,7 +56,7 @@ const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, 
     return !!currentUserCoins.find((currentUserCoin: UserCoin) => currentUserCoin.symbol === symbol);
   };
 
-  const coinCard: any = (coinItem: any) => {
+  const coinCard = (coinItem: any) => {
     const coin = new Coin(coinItem.item);
     return (
       <Card style={{ marginBottom: 15 }}>
@@ -76,7 +76,11 @@ const CoinList: React.FC<IProps> = ({ coins, navigation, fromHome, currentUser, 
     );
   };
 
-  return coins.length > 0 ? <FlatList data={coins} renderItem={coinCard} keyExtractor={(item: Coin) => item.symbol} /> : <Loader />;
+  return coins.length > 0 ? (
+    <FlatList ListHeaderComponent={header} data={coins} renderItem={coinCard} keyExtractor={(item: Coin) => item.symbol} />
+  ) : (
+    <Loader />
+  );
 };
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
-import { Appbar, DefaultTheme, Button } from 'react-native-paper';
+import { Appbar, DefaultTheme, Button, Title } from 'react-native-paper';
 
 import Layout from '../components/layout.component';
 import CoinList from '../components/coin-list.component';
@@ -33,10 +33,14 @@ const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ currentUserCo
     getSavedCoinsFromCoin();
   }, []);
 
+  const coinListHeader = (): JSX.Element => {
+    return <Title style={{ marginBottom: 15, paddingTop: 20 }}>{currentUserCoins.length} coins saved !</Title>;
+  };
+
   return (
     <Layout>
       <Text>Saved coin view</Text>
-      <CoinList coins={savedCoins} fromHome={false} />
+      <CoinList coins={savedCoins} fromHome={false} header={coinListHeader} />
     </Layout>
   );
 };
