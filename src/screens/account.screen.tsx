@@ -24,7 +24,7 @@ interface IProps extends NavigationInjectedProps {
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
   const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ? currentUser.useTouchId : false);
-  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ? currentUser.phoneToken !== null : false);
+  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ? currentUser.phoneToken : false);
   const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
   const [usePhoneTokenLoading, setUsePhoneTokenLoading] = useState<boolean>(false);
 
