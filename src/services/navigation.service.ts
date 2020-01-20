@@ -1,13 +1,13 @@
 import { NavigationActions, NavigationParams } from 'react-navigation';
 
-let _navigator: any;
+let navigator: any;
 
 function setTopLevelNavigator(navigatorRef: any) {
-  _navigator = navigatorRef;
+  navigator = navigatorRef;
 }
 
 function navigate(routeName: string, params?: NavigationParams) {
-  _navigator.dispatch(
+  navigator.dispatch(
     NavigationActions.navigate({
       routeName,
       params,

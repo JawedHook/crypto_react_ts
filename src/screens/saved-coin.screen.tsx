@@ -1,36 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import React, { useEffect } from 'react';
 import { NavigationScreenComponent, NavigationInjectedProps } from 'react-navigation';
-import { Appbar, DefaultTheme, Button, Title } from 'react-native-paper';
+import { Appbar, DefaultTheme, Title } from 'react-native-paper';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import Layout from '../components/layout.component';
 import CoinList from '../components/coin-list.component';
-import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserCoins } from '../redux/user/user.selectors';
-import { connect } from 'react-redux';
 import { UserCoin, Coin } from '../models/coin.model';
-import { selectCoins } from '../redux/coins/coins.selectors';
+import { selectCoins, selectSavedCoins } from '../redux/coins/coins.selectors';
+import { getSavedCoinsFromCoins } from '../redux/coins/coins.action';
 
 interface IProps extends NavigationInjectedProps {
   currentUserCoins: UserCoin[];
-  coins: Coin[];
+  savedCoins: Coin[];
+  getSavedCoinsFromCoins: (currentUserCoins: UserCoin[]) => void;
 }
 
-const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ currentUserCoins, coins }) => {
-  const [savedCoins, setSavedCoins] = useState<Coin[]>([]);
-
-  const getSavedCoinsFromCoin = () => {
-    const filteredCoins = currentUserCoins.map((currentUserCoin: UserCoin) => {
-      const { symbol, min, max } = currentUserCoin;
-      const matchedCoin = coins.find((coin: Coin) => coin.symbol === symbol);
-      return new Coin({ ...matchedCoin, min, max });
-    });
-
-    setSavedCoins(filteredCoins);
-  };
-
+const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ currentUserCoins, getSavedCoinsFromCoins, savedCoins }) => {
   useEffect(() => {
-    getSavedCoinsFromCoin();
+    getSavedCoinsFromCoins(currentUserCoins);
   }, []);
 
   const coinListHeader = (): JSX.Element => {
@@ -38,8 +27,7 @@ const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ currentUserCo
   };
 
   return (
-    <Layout>
-      <Text>Saved coin view</Text>
+    <Layout style={{ paddingTop: 0, paddingRight: 0 }}>
       <CoinList coins={savedCoins} fromHome={false} header={coinListHeader} />
     </Layout>
   );
@@ -47,7 +35,7 @@ const SavedCoinScreen: NavigationScreenComponent<any, IProps> = ({ currentUserCo
 
 SavedCoinScreen.navigationOptions = {
   title: 'Saved',
-  header: ({ scene, previous, navigation }) => {
+  header: ({ scene }) => {
     const { options } = scene.descriptor;
     const title =
       options.headerTitle !== undefined ? options.headerTitle : options.title !== undefined ? options.title : scene.route.routeName;
@@ -62,6 +50,11 @@ SavedCoinScreen.navigationOptions = {
 const mapStateToProps = createStructuredSelector({
   currentUserCoins: selectCurrentUserCoins,
   coins: selectCoins,
+  savedCoins: selectSavedCoins,
 });
 
-export default connect(mapStateToProps)(SavedCoinScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  getSavedCoinsFromCoins: (currentUserCoins: UserCoin[]) => dispatch(getSavedCoinsFromCoins(currentUserCoins)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SavedCoinScreen);

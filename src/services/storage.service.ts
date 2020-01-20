@@ -24,7 +24,7 @@ export const setStorageAuthUserId = (authUserId: string): Promise<void> => {
 };
 
 export const getStorageAuthUserId = async (): Promise<string> => {
-  return  AsyncStorage.getItem(AUTH_USER_ID);
+  return AsyncStorage.getItem(AUTH_USER_ID);
 };
 
 export const removeStorageAuthUserId = async (): Promise<void> => {
