@@ -1,10 +1,10 @@
-import { Coin } from "./coin.model";
+import { UserCoin } from './coin.model';
 
 export class User {
   id: string;
   email: string;
   displayName: string;
-  coins: Coin[];
+  coins: UserCoin[];
   useTouchId: boolean;
   createdAt: number | Date;
   updatedAt: number | Date;

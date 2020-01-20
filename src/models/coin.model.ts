@@ -1,3 +1,9 @@
+export interface UserCoin {
+  symbol: string;
+  min: number;
+  max: number;
+}
+
 export class Coin {
   symbol: string;
   name: string;
@@ -13,7 +19,7 @@ export class Coin {
     this.rank = json.rank;
     this.price = `${json.price}`;
     this.delta_24h = json.delta_24h;
-    this.min = json.min || 0
-    this.max = json.max || 0
+    this.min = json.min;
+    this.max = json.max;
   }
 }

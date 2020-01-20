@@ -3,7 +3,6 @@ import { User } from '../../models/user.model';
 import NavigationService from '../../services/navigation.service';
 import { createUserProfileDocument, login, register, loginWithGoogle, logout, auth, firestore } from '../../services/firebase.service';
 import { setStorageAuthUserId, setStorageUseTouchId, getStorageAuthUserId } from '../../services/storage.service';
-import { Coin } from '../../models/coin.model';
 
 export const setUserCoin = (currentUser: User) => ({
   type: UserActionTypes.SET_USER_COIN,

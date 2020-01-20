@@ -12,14 +12,16 @@ import { Coin } from '../models/coin.model';
 import { User } from '../models/user.model';
 
 import { selectCurrentUser } from '../redux/user/user.selectors';
+import { setCoins } from '../redux/coins/coins.action';
+import { selectCoins } from '../redux/coins/coins.selectors';
 
 interface IProps {
   currentUser: User;
+  setCoins: (coins: Coin[]) => void;
+  coins: Coin[];
 }
 
-const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => {
-  const [coins, setCoins] = useState<Coin[]>([]);
-
+const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, setCoins, coins }) => {
   useEffect(() => {
     const fetchCoinsDatas: any = async () => {
       try {
@@ -35,7 +37,7 @@ const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => 
   return (
     <Layout>
       {currentUser && <Title style={{ marginBottom: 15 }}>Hi {currentUser.displayName} !</Title>}
-      <CoinList coins={coins} fromHome/>
+      <CoinList coins={coins} fromHome />
     </Layout>
   );
 };
@@ -56,6 +58,11 @@ HomeScreen.navigationOptions = {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  coins: selectCoins,
 });
 
-export default connect(mapStateToProps)(HomeScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  setCoins: (coins: Coin[]) => dispatch(setCoins(coins)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

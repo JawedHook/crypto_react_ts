@@ -5,66 +5,61 @@ import { Button, Appbar, DefaultTheme, Card, IconButton, FAB, ActivityIndicator 
 import Layout from '../components/layout.component';
 import coinApiService from '../services/coin-api.service';
 import { Coin } from '../models/coin.model';
+import Loader from '../components/loader.component';
+import DeltaCoinCard from '../components/delta-coin-card.component';
 
-interface IProps extends NavigationInjectedProps { }
+interface IProps extends NavigationInjectedProps {}
 
-const CoinScreen: NavigationScreenComponent<any, IProps> = ({ navigation: { state, navigate } }) => {
-
+const CoinScreen: NavigationScreenComponent<any, IProps> = ({
+  navigation: {
+    state: {
+      params: { symbol, fromHome, min, max },
+    },
+  },
+}) => {
   const [coin, setCoin] = useState<Coin>(null);
 
   useEffect(() => {
     const getCoinAsync = async () => {
-      const response = await coinApiService.getCoin(state.params.symbol);
+      const response = await coinApiService.getCoin(symbol);
       let coinApi: Coin;
-      if (state.params.fromHome) {
+      if (fromHome) {
         coinApi = new Coin(response.data);
       } else {
-        coinApi = new Coin({ min: state.params.min, max: state.params.max, ...response.data })
+        coinApi = new Coin({ ...response.data, min, max });
       }
       setCoin(coinApi);
-    }
+    };
     getCoinAsync();
   }, []);
 
   const saveCoin: any = (symbol: string) => {
-        // to do
-    }
+    // to do
+  };
 
-    const deltaCoinCard: any = (delta: string) => {
-        const icon = delta.includes('-') ? 'arrow-down' : 'arrow-up'
-        const color = delta.includes('-') ? DefaultTheme.colors.notification : DefaultTheme.colors.accent
-        return (
-            <FAB
-                icon={icon}
-                color={'white'}
-                label={`${delta}%`}
-                style={{ backgroundColor: color, paddingLeft: 0, paddingRight: 0, paddingTop: 0, paddingBottom: 0, marginRight: 10 }}
-                small
-            />
-        );
-    }
   return (
     <Layout>
-      {coin ?
+      {coin ? (
         <Card style={{ marginBottom: 15 }}>
-          <Card.Title
-            title={coin.name} subtitle={coin.symbol}
-            right={() => deltaCoinCard(coin.delta_24h)}
-          />
+          <Card.Title title={coin.name} subtitle={coin.symbol} right={() => <DeltaCoinCard delta={coin.delta_24h} />} />
           <Card.Content>
             <Text>Price: {coin.price.split('.')[0]}€</Text>
             <Text>Delta: {coin.delta_24h}% last 24h</Text>
             <Text>Rank: #{coin.rank}</Text>
+            {!fromHome && (
+              <>
+                <Text>Min: {coin.min}</Text>
+                <Text>Max: {coin.max}</Text>
+              </>
+            )}
           </Card.Content>
           <Card.Actions>
-            <IconButton onPress={() => saveCoin(coin.symbol)} icon='heart-outline' color={DefaultTheme.colors.notification} />
+            <IconButton onPress={() => saveCoin(coin.symbol)} icon="heart-outline" color={DefaultTheme.colors.notification} />
           </Card.Actions>
         </Card>
-        : 
-        <View style={{flex: 1, alignItems : 'center', justifyContent : 'center'}}>
-          <ActivityIndicator/>
-        </View>        
-      }
+      ) : (
+        <Loader />
+      )}
     </Layout>
   );
 };
