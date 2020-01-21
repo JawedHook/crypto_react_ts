@@ -20,6 +20,6 @@ export class User {
     this.useTouchId = useTouchId || false;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.phoneToken = phoneToken || null;
+    this.phoneToken = phoneToken;
   }
 }

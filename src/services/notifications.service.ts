@@ -22,12 +22,12 @@ const notificationsService = {
 
       // If not granted, exit function
       if (final !== 'granted') {
-        this.removePhoneToken(currentUser.id);
+        await this.removePhoneToken(currentUser.id);
         return;
       }
-      this.setPhoneToken(currentUser.id);
+      await this.setPhoneToken(currentUser.id);
     } catch (err) {
-      console.log('Cannot switch value : ', err.message || err.toString());
+      console.log('checkNotificationsPerm: ', err.message || err.toString());
     }
   },
   setPhoneToken: async (currentUserId: string) => {
@@ -36,7 +36,7 @@ const notificationsService = {
       await firestore.doc(`users/${currentUserId}`).update({ phoneToken });
       await setStoragePhoneToken(phoneToken);
     } catch (err) {
-      console.log(err.message || err.toString());
+      console.log('setPhoneToken: ', err.message || err.toString());
     }
   },
   removePhoneToken: async (currentUserId: string) => {
@@ -44,18 +44,18 @@ const notificationsService = {
       await firestore.doc(`users/${currentUserId}`).update({ phoneToken: null });
       await removeStoragePhoneToken();
     } catch (err) {
-      console.log(err.message || err.toString());
+      console.log('removePhoneToken: ', err.message || err.toString());
     }
   },
   sendNotification: async (currentUser: User, { title, body }) => {
     try {
-      await axios.post(NOTIFICATION_URL, {
+      axios.post(NOTIFICATION_URL, {
         to: currentUser.phoneToken,
         title,
         body,
       });
     } catch (err) {
-      console.log('console error send: ', err);
+      console.log('sendNotification: ', err);
     }
   },
 };

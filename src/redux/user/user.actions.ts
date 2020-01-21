@@ -56,7 +56,9 @@ export const signOutStart = () => ({
 });
 
 const setCurrentUserDatas = async (currentUser: User) => {
-  await notificationsService.sendNotification(currentUser, { title: `Welcome back ${currentUser.displayName}`, body: 'We missed you !' });
+  if (currentUser.phoneToken !== null) {
+    await notificationsService.sendNotification(currentUser, { title: `Welcome back ${currentUser.displayName}`, body: 'We missed you !' });
+  }
   await setStorageAuthUserId(currentUser.id);
   await setStorageUseTouchId(currentUser.useTouchId);
 };

@@ -23,8 +23,8 @@ interface IProps extends NavigationInjectedProps {
 }
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
-  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ? currentUser.useTouchId : false);
-  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ? currentUser.phoneToken : false);
+  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser.useTouchId);
+  const [usePhoneToken, setPhoneToken] = useState<boolean>(!!currentUser.phoneToken);
   const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
   const [usePhoneTokenLoading, setUsePhoneTokenLoading] = useState<boolean>(false);
 
@@ -107,7 +107,7 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
             <Subheading style={styles.isSwitchOnTitle}>Authorize notifications</Subheading>
             <Switch value={usePhoneToken} onValueChange={handleSwitchPhoneToken} />
           </View>
-          <Button onPress={() => sendNotification()}>Send notification</Button>
+          <Button onPress={sendNotification}>Send notification</Button>
         </Layout>
       )}
     </>
