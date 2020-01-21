@@ -34,7 +34,7 @@ const SignIn: React.FC<IProps> = ({
   signInLoading,
   signInWithGoogleLoading,
   handleSignInWithTouchId,
-  signInFailed
+  signInFailed,
 }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -46,6 +46,9 @@ const SignIn: React.FC<IProps> = ({
     const asyncEffect = async (): Promise<void> => {
       const storageUseTouchId = await getStorageUseTouchId();
       setUseTouchId(storageUseTouchId);
+      if (storageUseTouchId) {
+        clickSignInWithTouchId();
+      }
     };
 
     asyncEffect();
@@ -138,10 +141,19 @@ const SignIn: React.FC<IProps> = ({
           <Dialog.Content>
             <IconButton icon="fingerprint" color={DefaultTheme.colors.primary} size={100} />
             <HelperText style={{ textAlign: 'center' }} type="error" visible={failedCount > 0}>
-              Failed !
+              Failed number {failedCount}!
             </HelperText>
           </Dialog.Content>
           <Dialog.Actions style={{ marginBottom: 20 }}>
+            <Button
+              style={{ marginRight: 15 }}
+              icon="autorenew"
+              mode="contained"
+              onPress={() => {
+                scanFingerPrint();
+              }}>
+              Retry
+            </Button>
             <Button
               icon="cancel"
               mode="contained"
