@@ -23,8 +23,8 @@ interface IProps extends NavigationInjectedProps {
 }
 
 const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, signOutLoading, signOutError, handleSignOut }) => {
-  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser ? currentUser.useTouchId : false);
-  const [usePhoneToken, setPhoneToken] = useState<boolean>(currentUser ? currentUser.phoneToken : false);
+  const [useTouchId, setUseTouchId] = useState<boolean>(currentUser.useTouchId);
+  const [usePhoneToken, setPhoneToken] = useState<boolean>(!!currentUser.phoneToken);
   const [useTouchIdLoading, setUseTouchIdLoading] = useState<boolean>(false);
   const [usePhoneTokenLoading, setUsePhoneTokenLoading] = useState<boolean>(false);
 
@@ -58,8 +58,8 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
     try {
       if (usePhoneTokenLoading) return;
       setUsePhoneTokenLoading(true);
-      setPhoneToken(newValue)
-      newValue ? await notificationsService.setPhoneToken(currentUser.id) : await notificationsService.removePhoneToken(currentUser.id)
+      setPhoneToken(newValue);
+      newValue ? await notificationsService.setPhoneToken(currentUser.id) : await notificationsService.removePhoneToken(currentUser.id);
       setUsePhoneTokenLoading(false);
     } catch (err) {
       Alert.alert(
@@ -75,13 +75,13 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
         ],
         { cancelable: false },
       );
-      setPhoneToken(!newValue)
+      setPhoneToken(!newValue);
     }
-  }
+  };
 
   const sendNotification = async () => {
-    notificationsService.sendNotification(currentUser, { title: 'Yes', body: 'oui' })
-  }
+    notificationsService.sendNotification(currentUser, { title: 'Yes', body: 'oui' });
+  };
 
   return (
     <>
@@ -99,15 +99,15 @@ const AccountScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, si
           <Subheading>{currentUser.email}</Subheading>
           <Caption>Created {formatDistanceToNow(currentUser.createdAt)} ago</Caption>
           <Divider style={styles.divider} />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
             <Subheading style={styles.isSwitchOnTitle}>Use touchID</Subheading>
             <Switch value={useTouchId} onValueChange={handleSwitchUseTouchId} />
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
             <Subheading style={styles.isSwitchOnTitle}>Authorize notifications</Subheading>
             <Switch value={usePhoneToken} onValueChange={handleSwitchPhoneToken} />
           </View>
-          <Button onPress={() => sendNotification()}>Send notification</Button>
+          <Button onPress={sendNotification}>Send notification</Button>
         </Layout>
       )}
     </>

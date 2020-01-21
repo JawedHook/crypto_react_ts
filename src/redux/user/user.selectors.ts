@@ -4,6 +4,8 @@ const selectUser = (state: any) => state.user;
 
 export const selectCurrentUser = createSelector([selectUser], user => user.currentUser);
 
+export const selectCurrentUserCoins = createSelector([selectCurrentUser], currentUser => currentUser.coins);
+
 export const selectSignInError = createSelector([selectUser], user => user.signInError);
 
 export const selectSignUpError = createSelector([selectUser], user => user.signUpError);

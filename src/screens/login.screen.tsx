@@ -30,7 +30,7 @@ const LoginScreen: React.FC = () => {
           backgroundColor: DefaultTheme.colors.accent,
         }}
         renderLabel={renderLabel}
-        style={{ backgroundColor: DefaultTheme.colors.primary, marginTop: insets.top }}
+        style={{ backgroundColor: DefaultTheme.colors.primary, paddingTop: insets.top }}
       />
     );
   };

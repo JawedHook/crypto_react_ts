@@ -5,23 +5,25 @@ import { createStructuredSelector } from 'reselect';
 import { NavigationScreenComponent } from 'react-navigation';
 import coinApiService from '../services/coin-api.service';
 import Layout from '../components/layout.component';
-import { DefaultTheme, Appbar } from 'react-native-paper';
+import { DefaultTheme, Appbar, Title } from 'react-native-paper';
 import CoinList from '../components/coin-list.component';
 
 import { Coin } from '../models/coin.model';
 import { User } from '../models/user.model';
 
 import { selectCurrentUser } from '../redux/user/user.selectors';
+import { setCoins } from '../redux/coins/coins.action';
+import { selectCoins } from '../redux/coins/coins.selectors';
 
 import notificationsService from '../services/notifications.service';
 
 interface IProps {
   currentUser: User;
+  setCoins: (coins: Coin[]) => void;
+  coins: Coin[];
 }
 
-const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => {
-  const [coins, setCoins] = useState<Coin[]>([]);
-
+const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser, setCoins, coins }) => {
   useEffect(() => {
     notificationsService.checkNotificationsPerm(currentUser);
     const fetchCoinsDatas: any = async () => {
@@ -34,10 +36,14 @@ const HomeScreen: NavigationScreenComponent<any, IProps> = ({ currentUser }) => 
     };
     fetchCoinsDatas();
   }, []);
-  
+
+  const coinListHeader = (): JSX.Element => {
+    return currentUser ? <Title style={{ marginBottom: 15, paddingTop: 20 }}>Hi {currentUser.displayName} !</Title> : null;
+  };
+
   return (
-    <Layout style={{ paddingTop:0, paddingRight:0 }}>
-      <CoinList coins={coins} />
+    <Layout style={{ paddingTop: 0, paddingRight: 0 }}>
+      <CoinList coins={coins} fromHome header={coinListHeader} />
     </Layout>
   );
 };
@@ -58,6 +64,11 @@ HomeScreen.navigationOptions = {
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  coins: selectCoins,
 });
 
-export default connect(mapStateToProps)(HomeScreen);
+const mapDispatchToProps = (dispatch: any) => ({
+  setCoins: (coins: Coin[]) => dispatch(setCoins(coins)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
