@@ -20,3 +20,8 @@ export const removeSavedCoin = (symbol: string) => ({
   type: CoinsActionTypes.REMOVE_SAVED_COIN,
   payload: symbol,
 });
+
+export const updateSavedCoin = (userCoin: UserCoin) => ({
+  type: CoinsActionTypes.UPDATE_SAVED_COIN,
+  payload: userCoin,
+});

@@ -4,8 +4,9 @@ import NavigationService from '../../services/navigation.service';
 import { createUserProfileDocument, login, register, loginWithGoogle, logout, auth, firestore } from '../../services/firebase.service';
 import { setStorageAuthUserId, setStorageUseTouchId, getStorageAuthUserId } from '../../services/storage.service';
 import notificationsService from '../../services/notifications.service';
+import { UserCoin } from '../../models/coin.model';
 
-export const setUserCoin = (currentUser: User) => ({
+export const setUserCoins = (currentUser: User) => ({
   type: UserActionTypes.SET_USER_COIN,
   payload: currentUser,
 });
@@ -130,6 +131,19 @@ export const handleSignOut = () => {
       dispatch(signOutSuccess());
     } catch (err) {
       dispatch(signOutFailed(err.message || err.toString()));
+    }
+  };
+};
+
+export const updateUserCoins = (currentUser: User, newUserCoins: UserCoin[]) => {
+  return async (dispatch: any): Promise<void> => {
+    try {
+      const newUser: User = { ...currentUser, coins: newUserCoins };
+      dispatch(setUserCoins(newUser));
+      await firestore.doc(`users/${currentUser.id}`).update({ coins: newUserCoins });
+    } catch (err) {
+      dispatch(setUserCoins(currentUser));
+      console.log('Cannot add coin: ', err.message || err.toString());
     }
   };
 };

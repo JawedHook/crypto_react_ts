@@ -3,6 +3,7 @@ import { FlatList } from 'react-native';
 
 import { Coin } from '../models/coin.model';
 import CoinCard from './coin-card.component';
+import Loader from './loader.component';
 
 interface IProps {
   coins: Coin[];
@@ -23,7 +24,7 @@ const CoinList: React.FC<IProps> = ({ coins, fromHome, header }) => {
       keyExtractor={(item: any) => item.symbol}
     />
   ) : (
-    <>{header()}</>
+    <>{fromHome ? <Loader /> : header()}</>
   );
 };
 

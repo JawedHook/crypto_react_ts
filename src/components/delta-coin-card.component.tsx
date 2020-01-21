@@ -10,7 +10,7 @@ const DeltaCoinCard: React.FC<IProps> = ({ delta }) => {
   const color = delta < 0 ? DefaultTheme.colors.notification : DefaultTheme.colors.accent;
   return (
     <Chip icon={icon} style={{ backgroundColor: color, marginRight: 15 }} selected selectedColor="white">
-      {delta}
+      {delta} %
     </Chip>
   );
 };
