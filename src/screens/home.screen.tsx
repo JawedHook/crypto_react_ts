@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-
 import { NavigationScreenComponent } from 'react-navigation';
+import { DefaultTheme, Appbar, Title } from 'react-native-paper';
+
 import coinApiService from '../services/coin-api.service';
 import Layout from '../components/layout.component';
-import { DefaultTheme, Appbar, Title } from 'react-native-paper';
 import CoinList from '../components/coin-list.component';
-
 import { Coin } from '../models/coin.model';
 import { User } from '../models/user.model';
-
 import { selectCurrentUser } from '../redux/user/user.selectors';
 import { setCoins } from '../redux/coins/coins.action';
 import { selectCoins } from '../redux/coins/coins.selectors';
-
 import notificationsService from '../services/notifications.service';
 
 interface IProps {

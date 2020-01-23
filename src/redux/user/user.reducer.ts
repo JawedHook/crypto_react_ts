@@ -92,11 +92,11 @@ const userReducer = (state = INITIAL_STATE, action: any) => {
         signInError: null,
         signUpError: null,
       };
-      case UserActionTypes.SET_USER_COIN: 
-        return {
-          ...state,
-          currentUser : action.payload
-        }
+    case UserActionTypes.SET_USER_COIN:
+      return {
+        ...state,
+        currentUser: action.payload,
+      };
     default:
       return state;
   }
