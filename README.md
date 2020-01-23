@@ -1,12 +1,17 @@
 # crypto_react_ts
 
-Thomas Leveque
-Jawed Oukili
-Paul Cherruault
+## Authors
 
-install the project :
+Thomas Leveque.
+Jawed Oukili.
+Paul Cherruault.
 
-unzip the file config.zip
-put the config filder at the root of the project
-run `npm i`
-run  `expo start`
+## Installation
+
+Unzip the file config.zip.
+Put the config filder at the root of the project.
+
+```bash
+npm i
+expo start
+```
